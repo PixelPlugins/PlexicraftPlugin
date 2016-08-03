@@ -65,4 +65,29 @@ public class Plexicraft extends EZPlugin {
 			me.chat(Double.toString(ownedLand.get(args[1] + "A").getX()) + Double.toString(ownedLand.get(args[1] + "B").getX()));
 		}
 	}
+	
+	@Command(aliases = {"check"},
+			description = "checks to see if you are in your claim",
+			permissions = {""},
+			toolTip = "/check"
+			)
+	public void checkCommand(MessageReceiver caller, String[] args){
+		if(caller instanceof Player){
+			Player me = (Player)caller;
+			Location loc = me.getLocation();
+			
+			double trx;
+			double blx;
+			
+			trx = ownedLand.get(args[1] + "A").getX();
+			blx = ownedLand.get(args[1] + "B").getX();
+			
+			if(loc.getX() > blx && loc.getX() < trx){
+				me.chat("[CLAIM]: You are in your claim.");
+			}
+			else{
+				me.chat("[CLAIM]: You are outside of your claim.");
+			}
+		}
+	}
 }
