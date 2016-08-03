@@ -78,16 +78,32 @@ public class Plexicraft extends EZPlugin {
 			
 			double trx;
 			double blx;
+			double trz;
+			double blz;
 			
 			trx = ownedLand.get(args[1] + "A").getX();
 			blx = ownedLand.get(args[1] + "B").getX();
+			trz = ownedLand.get(args[1] + "A").getZ();
+			blz = ownedLand.get(args[1] + "B").getZ();
 			
-			if(loc.getX() > blx && loc.getX() < trx){
-				me.chat("[CLAIM]: You are in your claim.");
+			boolean inclaim = checkIfInClaim(trx,blx,trz,blz,loc);
+			
+			if(inclaim){
+				me.chat("You are in your claim.");
 			}
 			else{
-				me.chat("[CLAIM]: You are outside of your claim.");
+				me.chat("You are outside of your claim.");
 			}
+		}
+	}
+	
+	public boolean checkIfInClaim(double trx, double blx, double trz, double blz, Location loc){
+		if(loc.getX() > blx && loc.getX() < trx
+					&& loc.getZ() < blz && loc.getZ() > trz){
+				return true;
+		}
+		else{
+			return false;
 		}
 	}
 }
