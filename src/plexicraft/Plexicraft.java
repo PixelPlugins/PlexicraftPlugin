@@ -53,16 +53,23 @@ public class Plexicraft extends EZPlugin {
 			)
 	public void claimCommand(MessageReceiver caller, String[] args){
 		if(caller instanceof Player){
-			Player me = (Player)caller;
-			Location loc = me.getLocation();
-			
-			Location tr = new Location(loc.getX() + 10, loc.getY(), loc.getZ() - 10);
-			Location bl = new Location(loc.getX() - 10, loc.getY(), loc.getZ() + 10);
-			
-			ownedLand.put(args[1] + "A", tr);
-			ownedLand.put(args[1] + "B", bl);
-			
-			me.chat(Double.toString(ownedLand.get(args[1] + "A").getX()) + Double.toString(ownedLand.get(args[1] + "B").getX()));
+			if(!args[1].equalsIgnoreCase("remove")){
+				Player me = (Player)caller;
+				Location loc = me.getLocation();
+				
+				Location tr = new Location(loc.getX() + 10, loc.getY(), loc.getZ() - 10);
+				Location bl = new Location(loc.getX() - 10, loc.getY(), loc.getZ() + 10);
+				
+				ownedLand.put(args[1] + "A", tr);
+				ownedLand.put(args[1] + "B", bl);
+				
+				me.chat(Double.toString(ownedLand.get(args[1] + "A").getX()) + Double.toString(ownedLand.get(args[1] + "B").getX()));
+			}
+			else if(args[1].equalsIgnoreCase("remove")){
+				ownedLand.remove(args[2] + "A");
+				ownedLand.remove(args[2] + "B");
+			}
+		
 		}
 	}
 	
