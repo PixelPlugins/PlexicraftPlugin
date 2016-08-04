@@ -12,11 +12,17 @@ import net.canarymod.api.world.blocks.Block;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import net.visualillusionsent.utils.PropertiesFile;
+import net.canarymod.hook.player.BlockDestroyHook;
+import net.canarymod.hook.HookHandler;
+import net.canarymod.plugin.PluginListener;
 
-public class Plexicraft extends EZPlugin {
+public class Plexicraft extends EZPlugin implements PluginListener{
   
   private static HashMap<String, Location> ownedLand = 
 	new HashMap<String, Location>();
+	
+	PropertiesFile config = getConfig();
   
   @Command(aliases = { "plexi" },
             description = "runs plexicraft functions",
@@ -63,6 +69,11 @@ public class Plexicraft extends EZPlugin {
 				ownedLand.put(args[1] + "A", tr);
 				ownedLand.put(args[1] + "B", bl);
 				
+				config.setDouble(args[1] + "A" + "X", tr.getX());
+				config.setDouble(args[1] + "B" + "X", bl.getX());
+				
+				config.save();
+				
 				me.chat(Double.toString(ownedLand.get(args[1] + "A").getX()) + Double.toString(ownedLand.get(args[1] + "B").getX()));
 			}
 			else if(args[1].equalsIgnoreCase("remove")){
@@ -101,6 +112,37 @@ public class Plexicraft extends EZPlugin {
 			else{
 				me.chat("You are outside of your claim.");
 			}
+		}
+	}
+	
+	@Override
+	public boolean enable(){
+		Canary.hooks().registerListener(this, this);
+		return super.enable();
+	}
+	
+	@HookHandler
+	public void onBlockDestroy(BlockDestroyHook event){
+		System.out.println("[PLEXICRAFT]: Block broken.");
+		Player player = event.getPlayer();
+		Location loc = player.getLocation();
+		
+		player.chat("You're destroying a block!");
+		String name = player.getDisplayName();
+		if(name == null){
+			player.chat("You are null!!");
+		}
+		player.chat(name);
+		
+		double trx = ownedLand.get(name + "A").getX();
+		double blx = ownedLand.get(name + "B").getX();
+		double trz = ownedLand.get(name + "A").getZ();
+		double blz = ownedLand.get(name + "B").getZ();
+		
+		boolean isInOwnClaim = checkIfInClaim(trx, blx, trz, blz, loc);
+		
+		if(!isInOwnClaim){
+			event.setCanceled();
 		}
 	}
 	
